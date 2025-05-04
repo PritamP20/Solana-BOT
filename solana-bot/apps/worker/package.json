@@ -1,0 +1,19 @@
+{
+  "name": "worker",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "db": "*"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@ai-sdk/perplexity": "^1.1.8",
+    "@anthropic-ai/sdk": "^0.40.1",
+    "add": "^2.0.6",
+    "ai": "^4.3.13"
+  }
+}
