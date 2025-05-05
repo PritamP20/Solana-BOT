@@ -9,22 +9,24 @@ use solana_program::{
 };
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
-pub struct SumInstruction {
-    pub a: u64,
-    pub b: u64,
+pub struct GreetingAccount {
+    pub message: String,
 }
 
 entrypoint!(process_instruction);
 
 pub fn process_instruction(
     _program_id: &Pubkey,
-    _accounts: &[AccountInfo],
+    accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
-    let instruction = SumInstruction::try_from_slice(instruction_data)
-        .map_err(|_| ProgramError::InvalidInstructionData)?;
+    msg!("Processing instruction: Write Jaya Surya");
 
-    let sum = instruction.a + instruction.b;
-    msg!("Sum: {}", sum);
+    let account = &accounts;
+    let mut greeting_account = GreetingAccount::try_from_slice(&account.data.borrow())?;
+    greeting_account.message = "jaya surya".to_string();
+    greeting_account.serialize(&mut &mut account.data.borrow_mut()[..])?;
+
+    msg!("Updated message: {}", greeting_account.message);
     Ok(())
 }

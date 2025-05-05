@@ -305,7 +305,7 @@ test("test", async () => {
     8. **Install Bun and dependencies**
     bun install @solana/web3.js borsh
 
-    9. **Write tests in 'test/solana_program.test.ts'**
+    9. **Write tests in 'index.test.ts'**
 
     10. **Run tests**
     bun test

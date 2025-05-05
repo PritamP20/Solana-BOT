@@ -5,7 +5,8 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useAuth } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState,  } from "react"
+import { useRouter } from 'next/navigation';
 import axios from "axios"
 import { BACKEND_URL } from "@/config"
 
@@ -26,6 +27,7 @@ export function Prompt() {
   const { getToken } = useAuth()
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const router = useRouter()  
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -50,7 +52,9 @@ export function Prompt() {
           },
         }
       )
+
       console.log(response)
+      router.push(`/project/${response.data.projectId}`)
     } catch (error) {
       console.log(error)
     }

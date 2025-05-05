@@ -24,7 +24,7 @@ export async function usePrompts(projectId:string){
         const getPrompts = async ()=>{
 
             const token = await getToken()
-            const response = await axios(`${BACKEND_URL}/prompts/${projectId}`,{
+            const response = await axios.get(`${BACKEND_URL}/prompts/${projectId}`,{
                 headers:{
                     "Authorization":`Bearer ${token}`
                 }

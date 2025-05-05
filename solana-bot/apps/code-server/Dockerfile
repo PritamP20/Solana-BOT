@@ -10,6 +10,15 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+
+# ✅ Install Rust and Cargo using rustup
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
+    && echo 'source $HOME/.cargo/env' >> /etc/profile \
+    && echo 'source $HOME/.cargo/env' >> /home/coder/.bashrc
+
+# Make sure Rust is available for all users
+ENV PATH="/root/.cargo/bin:/home/coder/.cargo/bin:${PATH}"
+
 # Copy your project
 COPY temp/bolty-worker /home/coder/project
 RUN chown -R coder:coder /home/coder/project
