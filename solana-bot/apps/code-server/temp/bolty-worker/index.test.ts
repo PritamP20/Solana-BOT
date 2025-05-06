@@ -1,4 +1,4 @@
-import { expect, test, beforeAll } from "bun:test";
+import { expect, test, beforeAll, describe } from "bun:test";
 import {
     Connection,
     Keypair,
@@ -14,10 +14,12 @@ let connection: Connection;
 let payer: Keypair;
 let programId: PublicKey;
 
+describe("starting", ()=>{
+
 beforeAll(async () => {
-    connection = new Connection("http://localhost:8899", "confirmed");
+    connection = new Connection("devnet", "confirmed");
     payer = Keypair.generate();
-    programId = new PublicKey("YourProgramIdHere"); // Replace after deployment
+    programId = new PublicKey("BMqdRvZERzUwuTmACZDGGzSPxCuky8A7VBNcSZVgmXip"); // Replace after deployment
 
     // Airdrop SOL to payer
     const airdropSig = await connection.requestAirdrop(
@@ -32,9 +34,10 @@ test("Logs Jaya Surya", async () => {
         new TransactionInstruction({
             keys: [],
             programId,
-            data: Buffer.alloc(0),
+            data: Buffer.alloc(0), // make sure your program expects 0-length input
         })
     );
+    
 
     const sig = await sendAndConfirmTransaction(
         connection,
@@ -50,3 +53,5 @@ test("Logs Jaya Surya", async () => {
         log => log.includes("Jaya Surya")
     )).toBe(true);
 });
+
+})
