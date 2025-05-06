@@ -1,6 +1,13 @@
-FROM codercom/code-server:4.96.4
+# Stage 1: Solana image (only to get the Solana CLI)
+FROM --platform=linux/amd64 solanalabs/solana:v1.17.16 as solana
+
+# Stage 2: Your main dev environment
+FROM --platform=linux/amd64 codercom/code-server:4.96.4
 
 USER root
+
+# Copy Solana CLI from the solana image to the current image
+COPY --from=solana /usr/bin/solana /usr/local/bin/solana
 
 # Install Node.js 22
 RUN apt-get update \
@@ -10,16 +17,32 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Rust and Cargo using rustup for root user
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:$PATH"
 
-# ✅ Install Rust and Cargo using rustup
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y \
-    && echo 'source $HOME/.cargo/env' >> /etc/profile \
-    && echo 'source $HOME/.cargo/env' >> /home/coder/.bashrc
+# Install Rust for coder user
+USER coder
+WORKDIR /home/coder
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/home/coder/.cargo/bin:$PATH"
 
-# Make sure Rust is available for all users
-ENV PATH="/root/.cargo/bin:/home/coder/.cargo/bin:${PATH}"
+# Make cargo available in PATH for both users
+USER root
+RUN echo 'source "$HOME/.cargo/env"' >> /root/.bashrc && \
+    echo 'source "$HOME/.cargo/env"' >> /home/coder/.bashrc
 
-# Copy your project
+# Install Rust tools and extensions
+RUN code-server --install-extension rust-lang.rust-analyzer && \
+    code-server --install-extension serayuzgur.crates && \
+    code-server --install-extension tamasfe.even-better-toml
+
+# Add comment about Solana CLI installation
+# Solana CLI can also be installed manually after container startup if needed:
+# $ sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
+# $ export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
+
+# Copy your project (assuming temp/bolty-worker is correct)
 COPY temp/bolty-worker /home/coder/project
 RUN chown -R coder:coder /home/coder/project
 
@@ -29,8 +52,11 @@ RUN mkdir -p /home/coder/.local/share/code-server/User && \
     > /home/coder/.local/share/code-server/User/settings.json \
     && chown -R coder:coder /home/coder/.local
 
+# Switch to coder user
 USER coder
 
-EXPOSE 8080
+# Expose necessary ports
+EXPOSE 8080 8899 8900
 
+# Start code-server
 CMD ["code-server", "--auth", "none", "--bind-addr", "0.0.0.0:8080", "/home/coder/project"]

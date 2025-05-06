@@ -212,21 +212,23 @@ const SOLANA_ARTIFACT_INFO = `
 </framework_info>
 
 <file name="Cargo.toml">
-    [package]
-    name = "solana_program"
-    version = "0.1.0"
-    edition = "2021"
+[package]
+name = "solana_program"
+version = "0.1.0"
+edition = "2021"
+resolver = "2"
 
-    [dependencies]
-    solana-program = "1.18.26"
-    borsh = "0.9.1"
+[dependencies]
+solana-program = "1.18.26"
+borsh = "0.9.1"
 
-    [dev-dependencies]
-    solana-program-test = "2.2.7"
-    solana-sdk = "2.2.2"
+[dev-dependencies]
+# Align these with your solana-program version
+solana-program-test = "1.18.26" 
+solana-sdk = "1.18.26"
 
-    [lib]
-    crate-type = ["cdylib", "lib"]
+[lib]
+crate-type = ["cdylib", "lib"]
 </file>
 
 <file name="src/lib.rs">
@@ -294,7 +296,7 @@ test("test", async () => {
     4. **Write your program logic in 'src/lib.rs'**
 
     5. **Build for Solana**
-    cargo build-bpf
+    cargo build-sbf
 
     6. **Run local validator**
     solana-test-validator

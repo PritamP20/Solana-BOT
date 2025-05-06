@@ -1,5 +1,4 @@
 import { expect, test, beforeAll } from "bun:test";
-import * as borsh from "borsh";
 import {
     Connection,
     Keypair,
@@ -11,78 +10,43 @@ import {
     sendAndConfirmTransaction
 } from "@solana/web3.js";
 
-class GreetingAccount {
-    message: string;
-    constructor(fields: { message: string } | undefined = undefined) {
-        this.message = fields?.message || "";
-    }
-}
-
-const GreetingSchema = new Map([
-    [GreetingAccount, { kind: 'struct', fields: [['message', 'string']] }],
-]);
-
 let connection: Connection;
-let programId: PublicKey;
 let payer: Keypair;
-let greetingAccount: Keypair;
+let programId: PublicKey;
 
 beforeAll(async () => {
     connection = new Connection("http://localhost:8899", "confirmed");
-    programId = new PublicKey("YourProgramIdHere"); // Replace after deployment
     payer = Keypair.generate();
-    greetingAccount = Keypair.generate();
+    programId = new PublicKey("YourProgramIdHere"); // Replace after deployment
 
     // Airdrop SOL to payer
-    const airdropSignature = await connection.requestAirdrop(
+    const airdropSig = await connection.requestAirdrop(
         payer.publicKey,
         LAMPORTS_PER_SOL
     );
-    await connection.confirmTransaction(airdropSignature);
-
-    // Create account
-    const space = 100;
-    const lamports = await connection.getMinimumBalanceForRentExemption(space);
-    
-    const createTx = new Transaction().add(
-        SystemProgram.createAccount({
-            fromPubkey: payer.publicKey,
-            newAccountPubkey: greetingAccount.publicKey,
-            lamports,
-            space,
-            programId,
-        })
-    );
-    
-    await sendAndConfirmTransaction(connection, createTx, [payer, greetingAccount]);
+    await connection.confirmTransaction(airdropSig);
 });
 
-test("Write Jaya Surya", async () => {
-    // Initialize account
-    const greeting = new GreetingAccount({ message: "" });
-    const instructionData = borsh.serialize(GreetingSchema, greeting);
+test("Logs Jaya Surya", async () => {
+    const transaction = new Transaction().add(
+        new TransactionInstruction({
+            keys: [],
+            programId,
+            data: Buffer.alloc(0),
+        })
+    );
 
-    const instruction = new TransactionInstruction({
-        keys: [
-            { pubkey: greetingAccount.publicKey, isSigner: false, isWritable: true },
-        ],
-        programId,
-        data: Buffer.from(instructionData),
-    });
-
-    await sendAndConfirmTransaction(
+    const sig = await sendAndConfirmTransaction(
         connection,
-        new Transaction().add(instruction),
+        transaction,
         [payer]
     );
 
-    // Verify
-    const accountInfo = await connection.getAccountInfo(greetingAccount.publicKey);
-    const storedGreeting = borsh.deserialize(
-        GreetingSchema,
-        GreetingAccount,
-        accountInfo!.data
-    );
+    const logs = await connection.getTransaction(sig, {
+        commitment: "confirmed"
+    });
     
-    expect(storedGreeting.message).toBe("jaya surya");
+    expect(logs?.meta?.logMessages?.some(
+        log => log.includes("Jaya Surya")
+    )).toBe(true);
 });
