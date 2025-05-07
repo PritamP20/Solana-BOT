@@ -7,10 +7,11 @@ resolver = "2"
 [dependencies]
 solana-program = "1.18.26"
 borsh = "0.9.1"
+spl-token = { version = "3.2.0", features = ["no-entrypoint"] }
+spl-associated-token-account = "1.0.3"
 
 [dev-dependencies]
-# Align these with your solana-program version
-solana-program-test = "1.18.26" 
+solana-program-test = "1.18.26"
 solana-sdk = "1.18.26"
 
 [lib]

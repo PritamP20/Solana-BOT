@@ -1,16 +1,14 @@
 {
-  "name": "bolty-worker",
-  "module": "index.ts",
-  "type": "module",
-  "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
+  "name": "solana-nft-mint",
+  "scripts": {
+    "test": "bun test"
   },
   "dependencies": {
-    "@noble/curves": "^1.9.0",
-    "@solana/web3.js": "^1.98.2"
+    "@solana/web3.js": "^1.86.0",
+    "@solana/spl-token": "^0.2.0",
+    "borsh": "^0.7.0"
+  },
+  "devDependencies": {
+    "bun-types": "^1.0.0"
   }
 }

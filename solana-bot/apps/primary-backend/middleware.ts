@@ -13,6 +13,7 @@ swIDAQAB
 
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization; // Bearer token
+  console.log(authHeader)
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
