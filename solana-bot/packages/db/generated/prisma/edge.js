@@ -168,7 +168,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/pritam/Documents/Projects/SolanaCodeEditor/mobile-magic/packages/db/generated/prisma",
+      "value": "/Users/pritam/Documents/Projects/SolanaCodeEditor/solana-bot/packages/db/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -182,7 +182,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/pritam/Documents/Projects/SolanaCodeEditor/mobile-magic/packages/db/prisma/schema.prisma",
+    "sourceFilePath": "/Users/pritam/Documents/Projects/SolanaCodeEditor/solana-bot/packages/db/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

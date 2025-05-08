@@ -1,5 +1,5 @@
 import {prismaClient} from "db/client"
-import express from "express"
+import express, { response } from "express"
 import cors from "cors"
 import { authMiddleware } from "./middleware";
 import e from "express";
@@ -7,18 +7,35 @@ import e from "express";
 const app = express();
 app.use(cors())
 app.use(express.json())
+app.use(authMiddleware);
 
 app.post("/project", authMiddleware, async(req, res)=>{
-    const {prompt, type} = req.body;
+    const {prompt, email, type} = req.body;
+
+    const userId=  req.userId;
+
+    const user = await prismaClient.user.findFirst({
+        where:{
+            email: email
+        }
+    })
+
+    if(!user){
+        await prismaClient.user.create({
+            data:{
+                id: userId,
+                email:email
+            }
+        })
+    }
+
     try {
-        const userId=  req.userId;
 
         const description = prompt.split("\n")[0];
 
         const response = await prismaClient.project.create({
             data:{description, userId, type}
         })
-    console.log("projectID: ",response.id)
     res.json({projectId: response.id})
     } catch (error) {
         res.json({error:error})
@@ -34,16 +51,20 @@ app.get("/projects", authMiddleware, async(req, res)=>{
     res.json({project})
 })
 
-app.get("/prompts/:projectId",authMiddleware,  async(req, res)=>{
-    const userId = req.userId;
-    const projectId = req.params.projectId;
-    const prompts = await prismaClient.prompt.findMany({
-        where:{projectId},
-        include:{
-            actions:true
-        }
-    })
-    res.json({prompts})
+app.get("/prompts/:projectId",  async(req, res)=>{
+
+    const projectId =  req.params.projectId;
+    try {
+        const resposnseI = await prismaClient.prompt.findMany({
+            where:{projectId:"ae0e8a46-115c-4519-8454-eb3d0033674f"}
+        })
+        console.log(resposnseI)
+        res.json({prompts: resposnseI})
+    } catch (error) {
+        res.json({error: error})
+    }
+    console.log("working")
+    res.json({msg:"wprkgin"})
 })
 
 app.post("/actions",authMiddleware, async(req, res)=>{

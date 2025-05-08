@@ -13,8 +13,9 @@ swIDAQAB
 
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization; // Bearer token
-  console.log(authHeader)
-  const token = authHeader && authHeader.split(" ")[1];
+  const token = authHeader && authHeader
+    .replace(/Bearer\s+/g, '') // Remove all 'Bearer ' occurrences
+    .trim();
 
   if (!token) {
     res.status(401).json({ message: "Unauthorized" });

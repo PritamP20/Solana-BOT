@@ -1,0 +1,92 @@
+# Stage 1: Solana image (only to get the Solana CLI)
+FROM --platform=linux/amd64 solanalabs/solana:v1.18.18 as solana
+
+# Stage 2: Main Dev Environment
+FROM --platform=linux/amd64 codercom/code-server:4.96.4
+
+USER root
+
+# Copy Solana CLI from stage 1
+COPY --from=solana /usr/bin/solana /usr/local/bin/solana
+
+# Base dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        curl \
+        unzip \
+        ca-certificates \
+        gnupg \
+        build-essential \
+        pkg-config \
+        libssl-dev \
+        libudev-dev \
+        git && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 22
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y --no-install-recommends nodejs && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install VS Code extensions
+RUN code-server --install-extension rust-lang.rust-analyzer && \
+    code-server --install-extension serayuzgur.crates && \
+    code-server --install-extension tamasfe.even-better-toml
+
+# Install Rust for root
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable
+ENV PATH="/root/.cargo/bin:$PATH"
+
+# Switch to coder user
+USER coder
+WORKDIR /home/coder
+
+# Install Rust for coder
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable && \
+    echo 'source "$HOME/.cargo/env"' >> ~/.bashrc
+
+# Install Anza (Solana CLI via Anza)
+RUN curl -sSfL https://release.anza.xyz/stable/install | sh && \
+    echo 'export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"' >> ~/.bashrc
+
+# Install Bun
+RUN curl -fsSL https://bun.sh/install | bash && \
+    echo 'export PATH="$HOME/.bun/bin:$PATH"' >> ~/.bashrc
+
+# Symlink compiler
+RUN mkdir -p ~/local/bin && \
+    echo '#!/bin/bash\n\
+if ! which cc > /dev/null; then\n\
+  mkdir -p ~/local/bin\n\
+  if which gcc > /dev/null; then\n\
+    ln -sf $(which gcc) ~/local/bin/cc\n\
+  elif which clang > /dev/null; then\n\
+    ln -sf $(which clang) ~/local/bin/cc\n\
+  fi\n\
+  export PATH=~/local/bin:$PATH\n\
+  echo "Created cc symlink in ~/local/bin"\n\
+fi' > ~/setup_compiler.sh && \
+    chmod +x ~/setup_compiler.sh && \
+    echo 'source ~/setup_compiler.sh' >> ~/.bashrc
+
+# Set VS Code theme
+RUN mkdir -p ~/.local/share/code-server/User && \
+    echo '{"workbench.colorTheme": "Dark+", "workbench.preferredDarkColorTheme": "Dark+"}' > ~/.local/share/code-server/User/settings.json
+
+# Set PATH
+ENV PATH="/home/coder/.cargo/bin:/home/coder/.local/share/solana/install/active_release/bin:/home/coder/.bun/bin:/home/coder/local/bin:$PATH"
+
+# Clone your project and extract specific folder
+RUN git clone --depth 1 --filter=blob:none --sparse https://github.com/PritamP20/Solana-BOT.git /tmp/repo && \
+    cd /tmp/repo && \
+    git sparse-checkout set bolty-worker && \
+    mkdir -p /home/coder/project && \
+    mv /tmp/repo/bolty-worker /home/coder/project/ && \
+    rm -rf /tmp/repo
+
+# Expose ports
+EXPOSE 8080 8899 8900
+
+# Launch code-server at project folder
+CMD ["code-server", "--auth", "none", "--bind-addr", "0.0.0.0:8080", "/home/coder/project/bolty-worker"]
