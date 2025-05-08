@@ -1,14 +1,18 @@
 # Stage 1: Solana CLI
 FROM --platform=linux/amd64 solanalabs/solana:v1.18.18 AS solana
 
-# Stage 2: Runtime stage with code-server
+# Stage 2: Bun stage
+FROM --platform=linux/amd64 oven/bun:1.0.5-alpine AS bun
+
+# Stage 3: Runtime stage with code-server
 FROM --platform=linux/amd64 debian:bookworm-slim
 
 # Set environment variables to minimize interaction and prevent unnecessary files
 ENV DEBIAN_FRONTEND=noninteractive \
-    PATH="/home/coder/.local/bin:/home/coder/.cargo/bin:/usr/local/bin:$PATH" \
+    PATH="/home/coder/.local/bin:/home/coder/.cargo/bin:/usr/local/bin:/home/coder/.bun/bin:$PATH" \
     RUSTUP_HOME=/home/coder/.rustup \
-    CARGO_HOME=/home/coder/.cargo
+    CARGO_HOME=/home/coder/.cargo \
+    BUN_INSTALL="/home/coder/.bun"
 
 # Install minimal dependencies and setup in a single layer to reduce size
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -23,6 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     dumb-init \
     sudo \
     xz-utils \
+    unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     # Set up locale to en_US.UTF-8
@@ -38,11 +43,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy Solana CLI early to reduce layer size
 COPY --from=solana /usr/bin/solana /usr/local/bin/solana
 
+# Copy Bun from the bun stage
+COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
+COPY --from=bun /usr/local/bin/bunx /usr/local/bin/bunx
+
 USER coder
 WORKDIR /home/coder
 
 # Create necessary directories
-RUN mkdir -p $HOME/.local/bin $HOME/local/bin
+RUN mkdir -p $HOME/.local/bin $HOME/local/bin $HOME/.bun/bin
 
 # Install code-server
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone --version 4.99.4 \
@@ -69,7 +78,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --pr
 RUN echo '#!/bin/sh\nif ! which cc > /dev/null; then\n  ln -sf $(which gcc) ~/local/bin/cc\n  export PATH=~/local/bin:$PATH\nfi' > $HOME/setup_compiler.sh \
     && chmod +x $HOME/setup_compiler.sh \
     && echo '. $HOME/setup_compiler.sh' >> $HOME/.bashrc \
-    && echo 'export PATH=$PATH:$HOME/.local/bin:$HOME/.cargo/bin' >> $HOME/.bashrc
+    && echo 'export PATH=$PATH:$HOME/.local/bin:$HOME/.cargo/bin:$HOME/.bun/bin' >> $HOME/.bashrc
 
 # Create VS Code settings
 RUN mkdir -p $HOME/.local/share/code-server/User \
@@ -77,6 +86,7 @@ RUN mkdir -p $HOME/.local/share/code-server/User \
 
 # Install VS Code extensions
 RUN $HOME/.local/bin/code-server --install-extension rust-lang.rust-analyzer \
+    && $HOME/.local/bin/code-server --install-extension oven.bun-vscode \
     && rm -rf $HOME/.cache
 
 # Clone project (sparse checkout to reduce size)
@@ -86,11 +96,9 @@ RUN git clone --depth 1 --filter=blob:none --sparse https://github.com/PritamP20
     && mv bolty-worker /home/coder/project/ \
     && rm -rf /tmp/repo $HOME/.cache
 
-# Install Node.js dependencies for primary-backen
-
 # Return to home directory and verify installations
 WORKDIR /home/coder
-RUN . $HOME/.cargo/env && rustc --version && cargo --version && solana --version \
+RUN . $HOME/.cargo/env && rustc --version && cargo --version && solana --version && bun --version \
     && find $HOME -type d -name ".git" -exec rm -rf {} +; 2>/dev/null || true \
     && rm -rf $HOME/.npm $HOME/.cache
 

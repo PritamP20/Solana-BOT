@@ -1,5 +1,5 @@
 # Stage 1: Solana CLI
-FROM --platform=linux/amd64 solanalabs/solana:v1.17.5 AS solana
+FROM --platform=linux/amd64 solanalabs/solana:v1.18.18 AS solana
 
 # Stage 2: Runtime stage with code-server
 FROM --platform=linux/amd64 debian:bookworm-slim

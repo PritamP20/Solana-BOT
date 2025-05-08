@@ -13,6 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 
 const ProjectPage: FC<{ params: Promise<{ projectId: string }> }> = ({ params }) => {
   const { projectId } = use(params)
+  // const projectId = "ae0e8a46-115c-4519-8454-eb3d0033674f"
   const prompts = usePrompts(projectId)
   const actions = useActions(projectId)
   const [prompt, setPrompt] = useState("")
@@ -34,6 +35,7 @@ const ProjectPage: FC<{ params: Promise<{ projectId: string }> }> = ({ params })
       
       console.log("Response received:", response)
       setPrompt("")
+      setIsLoading(false)
     } catch (error) {
       console.error("Error from perplexity:", error)
     } finally {
@@ -83,7 +85,7 @@ const ProjectPage: FC<{ params: Promise<{ projectId: string }> }> = ({ params })
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="prompts" className="flex-1 flex flex-col mt-0">
+          <TabsContent value="prompts" className="flex-1 flex flex-col mt-0 ">
             <ScrollArea className="flex-1 p-4">
               {!prompts || prompts.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center p-4">
@@ -92,11 +94,11 @@ const ProjectPage: FC<{ params: Promise<{ projectId: string }> }> = ({ params })
                   <p className="text-sm text-gray-500 mt-1">Start by sending a prompt below</p>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-4 overflow-y max-h-[70vh]">
                   {prompts.map((prompt, index) => (
                     <div 
                       key={prompt.id}
-                      className={`rounded-lg p-3 ${
+                      className={`rounded-lg p-2 ${
                         prompt.type === "USER" 
                           ? "bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900" 
                           : "bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
@@ -112,7 +114,7 @@ const ProjectPage: FC<{ params: Promise<{ projectId: string }> }> = ({ params })
                             {prompt.type === "USER" ? "U" : "S"}
                           </div>
                         </Avatar>
-                        <span className="text-xs font-medium">
+                        <span className="text-xs font-light">
                           {prompt.type === "USER" ? "You" : "System"}
                         </span>
                         <span className="text-xs text-gray-500 ml-auto">
@@ -130,7 +132,7 @@ const ProjectPage: FC<{ params: Promise<{ projectId: string }> }> = ({ params })
             </ScrollArea>
           </TabsContent>
 
-          <TabsContent value="actions" className="flex-1 flex flex-col mt-0">
+          <TabsContent value="actions" className="flex-1 flex flex-col mt-0 max-h-[75vh] overflow-y-auto">
             <ScrollArea className="flex-1 p-4">
               {!actions || actions.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center p-4">

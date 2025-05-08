@@ -1,0 +1,76 @@
+{
+  "name": "vscode-error-assistant",
+  "displayName": "Error Assistant",
+  "description": "Detects errors in files and terminal output and offers to solve them via AI API",
+  "version": "0.1.0",
+  "publisher": "Pritam",
+  "engines": {
+    "vscode": "^1.91.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:errorAssistant.checkCurrentFile",
+    "onCommand:errorAssistant.checkTerminalErrors"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "errorAssistant.checkCurrentFile",
+        "title": "Error Assistant: Check Current File for Errors"
+      },
+      {
+        "command": "errorAssistant.checkTerminalErrors",
+        "title": "Error Assistant: Check Terminal for Errors"
+      }
+    ],
+    "configuration": {
+      "title": "Error Assistant",
+      "properties": {
+        "errorAssistant.apiEndpoint": {
+          "type": "string",
+          "default": "http://localhost:8082/extention",
+          "description": "AI API endpoint for error solving"
+        },
+        "errorAssistant.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API key for authentication (if required)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.9",
+    "@types/node": "^18.19.55",
+    "@types/vscode": "^1.91.0",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.1",
+    "glob": "^11.0.0",
+    "mocha": "^10.7.3",
+    "typescript": "^5.6.3",
+    "vscode-test": "^1.6.1"
+  },
+  "dependencies": {
+    "@vscode/vsce": "^3.3.2",
+    "axios": "^1.9.0",
+    "vsce": "^2.15.0"
+  },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Pritam-ptg/VS-Code-Extention.git"
+    }
+}
