@@ -10,6 +10,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import SolanaConnectButton  from "@/components/SolanaConnectButton";
+import {
+  Connection,
+  Keypair,
+  PublicKey,
+  Transaction,
+  sendAndConfirmTransaction,
+  SystemProgram,
+} from "@solana/web3.js";
+import * as splGovernance from "@solana/spl-governance";
+import SignConnectButton from "@/components/SignTransction";
+
+
 
 const ProjectPage: FC<{ params: Promise<{ projectId: string }> }> = ({ params }) => {
   const { projectId } = use(params)
@@ -205,19 +218,24 @@ const ProjectPage: FC<{ params: Promise<{ projectId: string }> }> = ({ params })
             <LayoutList className="h-4 w-4 text-blue-500" />
             <span className="font-medium text-sm">Code Editor</span>
           </div>
-          <Button variant="outline" size="sm" className="h-8">
-            <RefreshCw className="h-3 w-3 mr-1" />
-            Refresh
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="h-8">
+              <RefreshCw className="h-3 w-3 mr-1" />
+              Refresh
+            </Button>
+            <SolanaConnectButton />
+
+          </div>
         </div>
         
         {/* Iframe */}
         <div className="flex-1 p-2 bg-gray-100 dark:bg-gray-900">
           <iframe 
-            src={`http://localhost:8080/`} 
-            className="w-full h-full rounded-lg shadow-md border border-gray-200 dark:border-gray-800 bg-white"
+            src={`http://localhost:8080/?folder=/home/coder/project`} 
+            className="w-full h-full text-sm p-0 rounded-lg shadow-md border border-gray-200 dark:border-gray-800 bg-black"
           />
         </div>
+
       </div>
     </div>
   )

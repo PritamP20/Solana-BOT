@@ -5,6 +5,7 @@ import {
   ClerkProvider} from '@clerk/nextjs'
   import { ThemeProvider } from "@/components/ThemeProvider"
 
+  import { AppWalletProvider } from "@/components/AppWalletProvider";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -38,7 +39,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-        {children}
+        <AppWalletProvider>{children}</AppWalletProvider>
         </ThemeProvider>
       </body>
     </html>

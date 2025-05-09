@@ -4727,16 +4727,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "solana_program"
-version = "0.1.0"
-dependencies = [
- "borsh 0.9.3",
- "solana-program",
- "solana-program-test",
- "solana-sdk",
-]
-
-[[package]]
 name = "solana_rbpf"
 version = "0.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4753,6 +4743,16 @@ dependencies = [
  "scroll",
  "thiserror",
  "winapi",
+]
+
+[[package]]
+name = "solana_trade"
+version = "0.1.0"
+dependencies = [
+ "borsh 0.9.3",
+ "solana-program",
+ "solana-program-test",
+ "solana-sdk",
 ]
 
 [[package]]

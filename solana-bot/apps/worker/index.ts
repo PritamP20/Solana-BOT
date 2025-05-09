@@ -78,7 +78,7 @@ app.post("/prompt", async (req, res)=>{
 
     //perpelxity code
     const response = await generateText({
-        model: perplexity('sonar'),
+        model: perplexity('sonar-pro'),
         messages: formattedPrompts,
         system: systemPrompt("SOLANA"),
         maxTokens: 8000,
