@@ -1,36 +1,41 @@
-## Solana Program Setup
+# Hello World Solana Contract
 
-1. **Install Rust**
-   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+This is a simple "Hello World" smart contract built on Solana. The contract has a single instruction that logs "Hello, World!" to the program logs when called.
 
-2. **Install Solana CLI**
-   sh -c "$(curl -sSfL https://release.solana.com/stable/install)"
+## Structure
 
-3. **Create new project**
-   cargo new solana_program --lib
+- `src/lib.rs` - The Solana program written in Rust
+- `index.test.ts` - JavaScript test file using Bun and @solana/web3.js
 
-4. **Write your program logic in 'src/lib.rs'**
+## How It Works
 
-5. **Build for Solana**
+The contract defines a single instruction called `SayHello` that, when invoked, will log "Hello, World!" to the Solana program logs.
+
+## Building and Testing
+
+1. **Build the program**:
+   ```
    cargo build-sbf
+   ```
 
-6. **Run local validator**
+2. **Start a local Solana validator**:
+   ```
    solana-test-validator
+   ```
 
-7. **Deploy program**
+3. **Deploy the program**:
+   ```
    solana program deploy ./target/deploy/solana_program.so
+   ```
 
-8. **Install Bun and dependencies**
-   bun install @solana/web3.js borsh
+4. **Run the tests**:
+   ```
+   bun test
+   ```
 
-9. **Write tests in 'index.test.ts'**
+## Notes
 
-10. **Run tests**
-    bun test
-
-**Troubleshooting Tips:**
-
-- Ensure your Solana program is correctly deployed and the program ID is accurate.
-- Check that your local Solana validator is running.
-- Verify that the payer account has sufficient SOL for transactions.
+- This is a minimal example to demonstrate the basic structure of a Solana program
+- In a real-world scenario, you would want to add more robust error handling and functionality
+- The test file demonstrates how to create and send a transaction to the program
   

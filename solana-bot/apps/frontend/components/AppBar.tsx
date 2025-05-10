@@ -12,6 +12,7 @@ import {
 import { Geist, Geist_Mono } from 'next/font/google'
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { useTheme } from "next-themes"
+
 const AppBar = () => {
   const { theme, setTheme } = useTheme()
   return (
@@ -22,6 +23,7 @@ const AppBar = () => {
       <div>
       <header className="flex justify-end items-center p-3 gap-4 h-8">
         <Button onClick={e=>setTheme(prev=> prev=="light"? "dark":"light")}>Theme</Button>
+
             <SignedOut>
               <SignInButton />
               <SignUpButton />

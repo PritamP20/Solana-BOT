@@ -1,6 +1,7 @@
 import { prismaClient } from "db/client";
 
-const BASE_WORKER_DIR = process.env.BASE_WORKER_DIR || `/Users/pritam/Documents/Projects/SolanaCodeEditor/solana-bot/apps/code-server/temp/bolty-worker`
+// const BASE_WORKER_DIR = process.env.BASE_WORKER_DIR || `/Users/pritam/Documents/Projects/SolanaCodeEditor/solana-bot/apps/code-server/temp/bolty-worker`
+const BASE_WORKER_DIR = process.env.BASE_WORKER_DIR || `http://localhost:8080/?folder=/home/coder/project`
 
 if(!Bun.file(BASE_WORKER_DIR).exists()){
     Bun.write(BASE_WORKER_DIR, "")

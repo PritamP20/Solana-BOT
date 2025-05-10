@@ -28,6 +28,7 @@ export class ArtifactProcessor {
     
 
     parse() {
+        // console.log("workign in phaser")
     //    const ArtifactStart = this.currentArtifact.split("\n").findIndex((line) => line.includes("<boltArtifact id="));
        let ArtifactEnd = this.currentArtifact.split("\n").findIndex((line) => line.includes("</boltArtifact>")) ?? (this.currentArtifact.split("\n").length - 1);
 

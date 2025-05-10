@@ -19,9 +19,6 @@ const app = express();
 app.use(cors())
 app.use(express.json());
 
-// import { GoogleGenAI,  } from "@google/genai";
-
-// const ai = new GoogleGenAI({ apiKey: "AIzaSyCoD0gAoM-AIqKP4Wem0VMB6jBD-g13vyk" });
 
 
 app.post("/prompt", async (req, res)=>{
@@ -66,17 +63,6 @@ app.post("/prompt", async (req, res)=>{
 
     let artifactProcessor = new ArtifactProcessor("", (fileContent, filePath)=>onFileUpdate(fileContent, filePath, projectId, promptDb.id), (shellCommand)=>onShellCommand(shellCommand, projectId, promptDb.id));
     let artifact = "";
-    // const response = await generateText({
-    //     model: perplexity('sonar'),
-    //     messages: allPrompts.map((p: any) => ({
-    //       role: p.type === "USER" ? "user" : "assistant",
-    //       content: p.content
-    //     })),
-    //     system: systemPrompt("SOLANA"),
-    //     maxTokens: 8000,
-    //   })
-
-    //perpelxity code
     const response = await generateText({
         model: perplexity('sonar-pro'),
         messages: formattedPrompts,
@@ -86,7 +72,6 @@ app.post("/prompt", async (req, res)=>{
 
     console.log(response)
 
-    // const response = generateGeminiText()
       
     
     artifactProcessor.append(response.text);
@@ -116,6 +101,24 @@ app.post("/prompt", async (req, res)=>{
       
     res.json({msg:"done"})
 })
+
+// app.post("/lastPrompt", async (req, res)=>{
+
+//     const {prompt, projectId}=req.body;
+//     console.log(prompt)
+//     const promptDb = await prismaClient.prompt.create({
+//         data:{
+//             content:"Fetch the last prompt",
+//             projectId,
+//             type:"SYSTEM"
+//         }
+//     })
+
+//     let artifactProcessor = new ArtifactProcessor("", (fileContent, filePath)=>onFileUpdate(fileContent, filePath, projectId, promptDb.id), (shellCommand)=>onShellCommand(shellCommand, projectId, promptDb.id));
+//     let artifact = "";
+//     artifactProcessor.append(prompt);
+//     artifactProcessor.parse();
+// })
 
 app.listen(9091, ()=>{
     console.log("Worker server started at 9091")

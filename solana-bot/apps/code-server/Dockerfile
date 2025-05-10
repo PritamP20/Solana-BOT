@@ -71,6 +71,8 @@ RUN code-server --install-extension rust-lang.rust-analyzer && \
 
 # Copy your project (assuming temp/bolty-worker is correct)
 COPY temp/bolty-worker /home/coder/project
+COPY temp/server /home/coder/server
+# COPY temp/worker /home/coder/worker
 RUN chown -R coder:coder /home/coder/project
 
 # Set Dark+ theme by default
