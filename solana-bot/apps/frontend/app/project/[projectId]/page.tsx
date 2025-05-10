@@ -5,7 +5,7 @@ import React, { FC, use, useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { AlertCircle, Code, Command, FilePlus, Folder, LayoutList, Loader2, MessageSquare, Rocket, Hammer, Wallet, RefreshCw, Send, Download, Cloud } from 'lucide-react'
 import axios from 'axios'
-import { WORKER_URL, DOCKER_SERVER_URL } from '@/config'
+import { WORKER_URL, DOCKER_SERVER_URL, DOCKER_SERVER_URL_V2 } from '@/config'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
@@ -468,7 +468,7 @@ const downloadWallet = () => {
         {/* Iframe */}
         <div className="flex-1 p-2 bg-gray-100 dark:bg-gray-900">
           <iframe 
-            src={`http://localhost:8080/?folder=/home/coder/project`} 
+            src={`${DOCKER_SERVER_URL_V2}/?folder=/home/coder/project`} 
             className="w-full h-full text-sm p-0 rounded-lg shadow-md border border-gray-200 dark:border-gray-800 bg-black"
           />
         </div>
