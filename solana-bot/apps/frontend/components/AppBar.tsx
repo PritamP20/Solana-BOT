@@ -20,7 +20,7 @@ const AppBar = () => {
         <SidebarTrigger /> <span>Solana</span>
       </div>
       <div>
-      <header className="flex justify-end items-center p-4 gap-4 h-16">
+      <header className="flex justify-end items-center p-3 gap-4 h-8">
         <Button onClick={e=>setTheme(prev=> prev=="light"? "dark":"light")}>Theme</Button>
             <SignedOut>
               <SignInButton />

@@ -70,7 +70,7 @@ export function Prompt() {
           }}
           placeholder="Describe what you want to build..."
           rows={1}
-          className="w-full p-4 text-xl rounded-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-black dark:text-white dark:border-gray-700 dark:placeholder-gray-500 transition-all duration-200 resize-none overflow-hidden"
+          className="w-full p-2 text-xl rounded-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-black dark:text-white dark:border-gray-700 dark:placeholder-gray-500 transition-all duration-200 resize-none overflow-hidden"
         />
         <Button onClick={e=>createProject()}>Submit</Button>
     </div>
