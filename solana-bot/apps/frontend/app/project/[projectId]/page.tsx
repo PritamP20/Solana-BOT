@@ -293,12 +293,12 @@ const downloadWallet = () => {
       />
       
       {/* Sidebar */}
-      <div className="w-[340px] flex flex-col border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
+      <div className="w-[25vw] flex flex-col border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
         {/* Header */}
         <div className="p-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Command className="h-5 w-5 text-blue-500" />
-            <h2 className="font-semibold text-lg">Project Assistant</h2>
+            <h2 className="font-semibold text-lg">Sol Crafter</h2>
           </div>
           <Button variant="outline" size="icon" className="h-8 w-8">
             <FilePlus className="h-4 w-4" />
@@ -306,17 +306,18 @@ const downloadWallet = () => {
         </div>
 
         {/* Tabs Navigation */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-          <TabsList className="grid grid-cols-2 mx-4 mt-2">
-            <TabsTrigger value="prompts" className="text-sm">
-              <MessageSquare className="h-4 w-4 mr-2" />
-              Conversation
-            </TabsTrigger>
-            <TabsTrigger value="actions" className="text-sm">
-              <Code className="h-4 w-4 mr-2" />
-              Actions
-            </TabsTrigger>
-          </TabsList>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col w-full justify-center">
+          <TabsList className="grid grid-cols-2 mx-4 mt-2 items-center">
+  <TabsTrigger value="prompts" className="text-sm flex items-center">
+    <MessageSquare className="h-4 w-4 mr-2" />
+    Conversation
+  </TabsTrigger>
+  <TabsTrigger value="actions" className="text-sm flex items-center">
+    <Code className="h-4 w-4 mr-2" />
+    Actions
+  </TabsTrigger>
+</TabsList>
+
 
           <TabsContent value="prompts" className="flex-1 flex flex-col mt-0 ">
             <ScrollArea className="flex-1 p-4">
@@ -357,7 +358,7 @@ const downloadWallet = () => {
                           })}
                         </span>
                       </div>
-                      <div className="text-sm pl-8">{prompt.content}</div>
+                      <div className="text-sm ">{prompt.content.split("<boltArtifact")[0]}  {prompt.content.split("</boltArtifact>")[1]}</div>
                     </div>
                   ))}
                 </div>
@@ -431,7 +432,7 @@ const downloadWallet = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 w-[70vw] flex flex-col">
         {/* Editor Header */}
         <div className="h-12 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 flex items-center px-4 justify-between">
           <div className="flex items-center gap-2">

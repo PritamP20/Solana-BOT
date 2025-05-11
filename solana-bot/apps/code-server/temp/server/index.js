@@ -39,8 +39,8 @@ app.get('/programId', async (req, res) => {
 
     try {
         console.log("Getting the contract solana_program.so");
-        const filePathSO = `../project/target/deploy/solana_program.so`;
-        const filePathKeyPair = `../project/target/deploy/solana_program-keypair.json`;
+        const filePathSO = `../project/target/deploy/solana_escrow.so`;
+        const filePathKeyPair = `../project/target/deploy/solana_escrow-keypair.json`;
 
         if (!fs.existsSync(filePathSO) || !fs.existsSync(filePathKeyPair)) {
             await execAsync(`cargo build-sbf --manifest-path ./project/Cargo.toml`);
@@ -68,27 +68,32 @@ app.get('/programId', async (req, res) => {
 });
 
 app.post('/finalize-deployment', async (req, res) => {
+  console.log("deployined in devnet")
   try {
     const { network = 'devnet' } = req.body;
 
     if (!NETWORKS[network]) {
+      console.log("network")
       return res.status(400).json({ error: 'Invalid network specified' });
     }
 
     try {
       await execAsync("solana address");
     } catch (error) {
+      console.log(error)
       return res.status(400).json({ message: "No wallet found. Run 'solana-keygen new' or configure one." });
     }
 
-    const filePathSO = `../project/target/deploy/solana_program.so`;
-    const filePathKeyPair = `../project/target/deploy/solana_program-keypair.json`;
+    const filePathSO = `../project/target/deploy/solana_escrow.so`;
+    const filePathKeyPair = `../project/target/deploy/solana_escrow-keypair.json`;
 
     if (!fs.existsSync(filePathSO) || !fs.existsSync(filePathKeyPair)) {
+      console.log("file path wrong")
       return res.status(400).json({ error: 'Program build artifacts not found' });
     }
 
-    let { stdout: balanceOutput } = await execAsync("solana balance");
+    let { stdout: balanceOutput } = await execAsync("solana config set --url https://api.devnet.solana.com && solana balance");
+    console.log(balanceOutput)
     const solBalance = parseFloat(balanceOutput.trim());
 
     if (solBalance < 1) {
@@ -96,7 +101,7 @@ app.post('/finalize-deployment', async (req, res) => {
       await execAsync("solana airdrop 5");
     }
 
-    const deployCommand = `solana program deploy ${filePathSO} --keypair ${filePathKeyPair} --url ${NETWORKS[network]}`;
+    const deployCommand = `solana program deploy ${filePathSO} --keypair ./my-keypair.json --url ${NETWORKS[network]}`;
     console.log('Deploying program...');
 
     const { stdout: deployOutput, stderr } = await execAsync(deployCommand);
@@ -107,6 +112,7 @@ app.post('/finalize-deployment', async (req, res) => {
     const deployedProgramId = programIdMatch ? programIdMatch[1] : null;
 
     if (!deployedProgramId) {
+      console.log("program id error")
       return res.status(500).json({ error: 'Failed to extract Program ID' });
     }
 
@@ -157,9 +163,10 @@ app.post("/create-wallet", async (req, res) => {
   }
 
   // Generate a new keypair
-  const cmd = "solana-keygen new --outfile ./my-keypair.json --force --no-bip39-passphrase";
+  const cmd = "solana-keygen new --outfile ./my-keypair.json --force --no-bip39-passphrase && solana config set --keypair ./my-keypair.json";
   try {
     const strout = await execPromise(cmd); // Wait for keypair generation to complete
+    console.log(strout)
     let keypairFile = fs.readFileSync(keypairPath);
     if (keypairFile) {
       return res.json({ keypair: keypairFile});

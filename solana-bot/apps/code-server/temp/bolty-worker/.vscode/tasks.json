@@ -4,7 +4,7 @@
       {
         "label": "Build Solana Contract",
         "type": "shell",
-        "command": "cargo build-sbf --verbose",
+        "command": "cargo build-sbf",
         "options": {
           "env": {
             "RUST_BACKTRACE": "1"

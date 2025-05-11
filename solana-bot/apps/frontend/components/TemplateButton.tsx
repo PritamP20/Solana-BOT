@@ -4,13 +4,13 @@ import { Button } from './ui/button'
 
 const TemplateButton = () => {
     const buttons = [{
-        label:"Build a Chess App",
+        label:"Program Mission Sindoor",
         link:"#"
     },{
-        label:"Build a Chess App",
+        label:"Stake Betting Contract",
         link:"#"
     },{
-        label:"Build a Chess App",
+        label:"Build a Escrow Contract",
         link:"#"
     }]
   return (

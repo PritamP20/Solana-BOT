@@ -1,41 +1,37 @@
-# Hello World Solana Contract
+## Solana Escrow Contract
 
-This is a simple "Hello World" smart contract built on Solana. The contract has a single instruction that logs "Hello, World!" to the program logs when called.
+### How it works
 
-## Structure
+- **Init:** Depositor creates an escrow account, locking funds for a beneficiary.
+- **Claim:** Beneficiary claims the funds.
+- **Cancel:** Depositor can cancel and reclaim if not yet claimed.
 
-- `src/lib.rs` - The Solana program written in Rust
-- `index.test.ts` - JavaScript test file using Bun and @solana/web3.js
+### Usage
 
-## How It Works
-
-The contract defines a single instruction called `SayHello` that, when invoked, will log "Hello, World!" to the Solana program logs.
-
-## Building and Testing
-
-1. **Build the program**:
+1. Build and deploy the program:
    ```
    cargo build-sbf
+   solana program deploy ./target/deploy/solana_program.so
    ```
+   Replace the programId in `index.test.ts` with your deployed program's address.
 
-2. **Start a local Solana validator**:
+2. Run local validator:
    ```
    solana-test-validator
    ```
 
-3. **Deploy the program**:
+3. Install JS deps:
    ```
-   solana program deploy ./target/deploy/solana_program.so
+   bun install @solana/web3.js borsh
    ```
 
-4. **Run the tests**:
+4. Run tests:
    ```
    bun test
    ```
 
-## Notes
+### Notes
 
-- This is a minimal example to demonstrate the basic structure of a Solana program
-- In a real-world scenario, you would want to add more robust error handling and functionality
-- The test file demonstrates how to create and send a transaction to the program
+- This is a minimal example for educational purposes.
+- For production, add error handling, event logging, and support for SPL tokens.
   

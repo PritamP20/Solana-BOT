@@ -73,13 +73,13 @@ export function AppSidebar() {
   }, [getToken]);
 
   return (
-    <Sidebar className="border-r border-gray-200 dark:border-gray-800 w-64 flex-shrink-0">
+    <Sidebar className="border-r border-gray-200 dark:border-gray-800 w-64 flex-shrink-0  bg-transparent backdrop-blur-lg">
       <div className="py-4 px-3 flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center">
             <span className="text-primary-foreground font-bold">AI</span>
           </div>
-          <span className="font-semibold text-lg">AppBuilder</span>
+          <span className="font-semibold text-lg">SolCrafter</span>
         </div>
       </div>
       

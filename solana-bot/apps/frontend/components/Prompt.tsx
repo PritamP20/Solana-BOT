@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import axios from "axios"
 import { BACKEND_URL } from "@/config"
 
+
 const FormSchema = z.object({
   bio: z
     .string()
@@ -25,9 +26,10 @@ export function Prompt() {
   const [prompt, setPrompt] = useState("")
 
   const { getToken } = useAuth()
-
+  
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const router = useRouter()  
+
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -38,13 +40,13 @@ export function Prompt() {
 
   async function createProject() {
     console.log("submitting")
-    const token = await getToken()
+    const token:any = await getToken()
     console.log(token)
     try {
       const response = await axios.post(
         `${BACKEND_URL}/project`,
         {
-          prompt: prompt,
+          prompt: prompt+" in the given format",
         },
         {
           headers: {
@@ -61,7 +63,7 @@ export function Prompt() {
   }
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
         <textarea
           ref={textareaRef}
           value={prompt}
